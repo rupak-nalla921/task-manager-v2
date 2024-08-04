@@ -1,5 +1,4 @@
-import { stringify } from "postcss";
-
+"use client"
 let data={
     "users":[
         {

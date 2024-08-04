@@ -1,10 +1,9 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { useState,useEffect } from "react";
+import { useState} from "react";
 import data from "@/app/data"
 export default function Home() {
 	const router = useRouter();
-    const [isWrong, setWrong] = useState(false);
     const [taskName, setTaskName] = useState('');
     const [Description, setDescription] = useState('');
     const [deadline,setDate]=useState('');

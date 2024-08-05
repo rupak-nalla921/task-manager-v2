@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import SuprSendInbox from '@suprsend/react-inbox'
+import 'react-toastify/dist/ReactToastify.css' // needed for toast notifications, can be ignored if hideToast=true
 
 export default function Home() {
     const router = useRouter();
@@ -66,6 +68,11 @@ export default function Home() {
                     </a>
                     <div>
                         <div className="flex items-center space-x-4">
+                            <SuprSendInbox
+                            workspaceKey= "eY0zNzLO0x7LGovrI9vG"
+                            subscriberId= "<subscriber_id>"
+                            distinctId= "<distinct_id>"
+                            />
                             <span className="text-white font-medium">{user.username}</span>
                             <i className="fas fa-user-circle text-white text-2xl"></i>
                         </div>

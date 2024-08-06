@@ -20,7 +20,7 @@ export default function AddTask() {
                 status: "pending"
             };
 
-            const currUser = JSON.parse(sessionStorage.getItem('userData'));
+            const currUser = JSON.parse(localStorage.getItem('userData'));
             const data = JSON.parse(localStorage.getItem('data'));
 
             if (data && currUser) {

@@ -1,7 +1,7 @@
 "use client"
 import { useRouter } from 'next/navigation';
 import { useState,useEffect } from 'react'; // Ensure this import works as expected
-
+import data from '@/app/data'
 export default function Home() {
     const router = useRouter();
     const [isWrong, setWrong] = useState(false);
@@ -16,7 +16,7 @@ export default function Home() {
             const users = data.users;
             for (let i = 0; i < users.length; i++) {
                 if (users[i].username === uname && users[i].password === password) {
-                    sessionStorage.setItem('userData', JSON.stringify(users[i]));
+                    localStorage.setItem('userData', JSON.stringify(users[i]));
                     router.push('/Home');
                 }
             }

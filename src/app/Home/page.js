@@ -4,12 +4,8 @@ import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 import 'react-toastify/dist/ReactToastify.css'; // needed for toast notifications, can be ignored if hideToast=true
 import suprsend from "@suprsend/web-sdk";
+import SuprSendInbox from '@suprsend/react-inbox'
 
-// Initialize SuprSend outside the component to avoid re-initialization
-suprsend.init("eY0zNzLO0x7LGovrI9vG", "SS.WSS._YDCcHe0LB3OOtmGZ8Oo4PVuMBGgAKciOrGmUt_A");
-
-// Dynamically import SuprSendInbox to prevent SSR issues
-const SuprSendInbox = dynamic(() => import('@suprsend/react-inbox'), { ssr: false });
 
 export default function Home() {
     const router = useRouter();
@@ -20,9 +16,12 @@ export default function Home() {
 
     
     useEffect(() => {
+        if (typeof window!== 'undefined') {
+            suprsend.init("eY0zNzLO0x7LGovrI9vG", "SS.WSS._YDCcHe0LB3OOtmGZ8Oo4PVuMBGgAKciOrGmUt_A");
+        
         const loadData = () => {
-            const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
-            const storedData = JSON.parse(localStorage.getItem('data') || '{}');
+            const userData = JSON.parse(localStorage?.getItem('userData') || '{}');
+            const storedData = JSON.parse(localStorage?.getItem('data') || '{}');
             setUser(userData);
             setData(storedData);
 
@@ -36,8 +35,8 @@ export default function Home() {
 
         loadData();
 
-        const storedData = JSON.parse(localStorage.getItem('data') || '{}');
-        const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
+        const storedData = JSON.parse(localStorage?.getItem('data') || '{}');
+        const userData = JSON.parse(localStorage?.getItem('userData') || '{}');
         setDistinctId(userData.uid);
 
         const uid = userData.uid;
@@ -55,6 +54,7 @@ export default function Home() {
         return () => {
             window.removeEventListener('storage', loadData);
         };
+    }
     }, []);
 
     const addTask = () => {
@@ -69,7 +69,7 @@ export default function Home() {
             const task = currUser.tasks.find(task => task.taskName === taskName);
             if (task) {
                 task.status = status;
-                localStorage.setItem('data', JSON.stringify(data));
+                localStorage?.setItem('data', JSON.stringify(data));
                 setCards([...currUser.tasks]);
             }
         }
@@ -80,7 +80,7 @@ export default function Home() {
     }
 
     return (
-        <main className="bg-[url('../../public/assests/back-ground.jpg')] bg-cover bg-center">
+        <main className="bg-black bg-cover bg-center">
             <header className="text-gray-600 body-font bg-opacity-30 backdrop-blur-md p-2">
                 <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between">
                     <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">

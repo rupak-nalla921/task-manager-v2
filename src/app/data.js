@@ -18,5 +18,6 @@ let data={
     
 
 }
-const savedData=localStorage.setItem('data',JSON.stringify(data))
-export default savedData;
+if(window){
+    localStorage.setItem('data',JSON.stringify(data))
+}

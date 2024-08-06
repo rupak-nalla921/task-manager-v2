@@ -1,17 +1,18 @@
 "use client"
 import { useRouter } from 'next/navigation';
-import { useState } from 'react'; // Ensure this import works as expected
+import { useState,useEffect } from 'react'; // Ensure this import works as expected
 
 export default function Home() {
     const router = useRouter();
     const [isWrong, setWrong] = useState(false);
     const [uname, setLoginUserName] = useState('');
     const [password, setLoginPassword] = useState('');
+	
 
     function login() {
         // Ensure this code runs only on the client side
         if (typeof window !== 'undefined') {
-			const data=localStorage.getItem('data');
+			const data=JSON.parse(localStorage.getItem('data'));
             const users = data.users;
             for (let i = 0; i < users.length; i++) {
                 if (users[i].username === uname && users[i].password === password) {

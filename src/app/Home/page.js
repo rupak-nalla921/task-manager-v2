@@ -1,38 +1,64 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import SuprSendInbox from '@suprsend/react-inbox'
-import 'react-toastify/dist/ReactToastify.css' // needed for toast notifications, can be ignored if hideToast=true
+import dynamic from 'next/dynamic';
+import 'react-toastify/dist/ReactToastify.css'; // needed for toast notifications, can be ignored if hideToast=true
+import suprsend from "@suprsend/web-sdk";
+import  SuprSendInbox from'@suprsend/react-inbox'
+// Initialize SuprSend outside the component to avoid re-initialization
+suprsend.init("eY0zNzLO0x7LGovrI9vG", "SS.WSS._YDCcHe0LB3OOtmGZ8Oo4PVuMBGgAKciOrGmUt_A");
+
+// Dynamically import SuprSendInbox to prevent SSR issues
 
 export default function Home() {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [data, setData] = useState(null);
     const [cards, setCards] = useState([]);
+    const [hash, setHash] = useState("");
+    const [distinctId, setDistinctId] = useState("");
 
     useEffect(() => {
-        const loadData = () => {
-            const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
-            const storedData = JSON.parse(localStorage.getItem('data') || '{}');
-            setUser(userData);
-            setData(storedData);
-
-            if (storedData && userData) {
-                const currUser = storedData.users.find(u => u.uid === userData.uid);
-                if (currUser) {
-                    setCards(currUser.tasks);
+        if (typeof window !== 'undefined') {
+            const loadData = () => {
+                const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
+                const storedData = JSON.parse(localStorage.getItem('data') || '{}');
+                setUser(userData);
+                setData(storedData);
+    
+                if (storedData && userData) {
+                    const currUser = storedData.users.find(u => u.uid === userData.uid);
+                    if (currUser) {
+                        setCards(currUser.tasks);
+                    }
                 }
+            };
+
+            loadData();
+            const storedData = JSON.parse(localStorage.getItem('data') || '{}');
+            const userData = JSON.parse(sessionStorage.getItem('userData') || '{}');
+            setDistinctId(userData.uid);
+            const uid = userData.uid;
+            const secret = "q6YqklUyAEvK_l-8PJ6npHAT0M1tKdwQ8KQYbbKC7Wc";
+            if (uid && secret) {
+                fetch(`api/hmac?distinct_id=${uid}&secret=${secret}&tasksObj=${encodeURIComponent(JSON.stringify(storedData.users[uid-1].tasks))}`)
+                    .then(response => response.json())
+                    .then(data => setHash(data.hash))
+                    .catch(error => console.error('Error fetching HMAC:', error));
             }
-        };
-
-        loadData();
-
-        window.addEventListener('storage', loadData);
-
-        return () => {
-            window.removeEventListener('storage', loadData);
-        };
+            const users=storedData.users
+            
+            
+    
+            window.addEventListener('storage', loadData);
+    
+            return () => {
+                window.removeEventListener('storage', loadData);
+            };
+        }
     }, []);
+    
+
 
     const addTask = () => {
         router.push('/addTask');
@@ -56,6 +82,20 @@ export default function Home() {
         return <div>Loading...</div>;
     }
 
+    function isToday(dateString) {
+        // Get today's date
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth() + 1; // Months are zero-based
+        const todayDate = today.getDate();
+    
+        // Parse the input date string
+        const [year, month, day] = dateString.split('-').map(Number);
+    
+        // Check if today's date matches the input date
+        return year === todayYear && month === todayMonth && day === todayDate;
+    }
+
     return (
         <main className="bg-[url('../../public/assests/back-ground.jpg')] bg-cover bg-center">
             <header className="text-gray-600 body-font bg-opacity-30 backdrop-blur-md p-2">
@@ -68,11 +108,6 @@ export default function Home() {
                     </a>
                     <div>
                         <div className="flex items-center space-x-4">
-                            <SuprSendInbox
-                            workspaceKey= "eY0zNzLO0x7LGovrI9vG"
-                            subscriberId= "<subscriber_id>"
-                            distinctId= "<distinct_id>"
-                            />
                             <span className="text-white font-medium">{user.username}</span>
                             <i className="fas fa-user-circle text-white text-2xl"></i>
                         </div>
@@ -85,10 +120,17 @@ export default function Home() {
                         <h1 className="text-white text-6xl">Welcome {user.username}.</h1>
                     </div>
                     <div>
-                        <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" onClick={addTask}>+ Add Task</button>
+                        <div className="flex">
+                            <SuprSendInbox
+                                workspaceKey="eY0zNzLO0x7LGovrI9vG"
+                                subscriberId="dTM03k-av8G_g9Wy2F03MAMTm04578ld2GVhQkFr0tM"
+                                distinctId={distinctId}
+                                themeType="dark"
+                            />
+                            <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" onClick={addTask}>+ Add Task</button>
+                        </div>
                     </div>
                 </div>
-                
                 <div className="p-3 mx-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                     {cards.map(card => (
                         <div key={card.taskName}>

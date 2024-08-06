@@ -57,9 +57,17 @@ app.prepare().then(() => {
     res.json({ hash });
   });
 
-  server.get('/api/notifications',(req,res)=>{
 
+  // tasks notification box
+  server.get('/api/notifications',(req,res)=>{
+    const {tasksObj}=req.query;
+    const tasksStr=decodeURIComponent(tasksObj);
+    const tasks=JSON.parse(tasksStr);
   });
+
+
+
+
   // Function to handle HMAC-SHA256 and Base64URL encoding
   function hmac_rawurlsafe_base64_string(distinct_id, secret) {
     return crypto

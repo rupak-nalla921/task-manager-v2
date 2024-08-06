@@ -1,4 +1,7 @@
 "use client"
+
+const { useEffect } = require("react")
+
 let data={
     "users":[
         {
@@ -18,6 +21,8 @@ let data={
     
 
 }
-if(window){
+
+useEffect(()=>{
     localStorage.setItem('data',JSON.stringify(data))
-}
+
+},[])

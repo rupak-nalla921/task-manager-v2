@@ -14,7 +14,7 @@ export default function Home() {
     const [cards, setCards] = useState([]);
     const [distinctId, setDistinctId] = useState("");
 
-    
+    const [hash,setHash]=useState("");
     useEffect(() => {
         if (typeof window!== 'undefined') {
             suprsend.init("eY0zNzLO0x7LGovrI9vG", "SS.WSS._YDCcHe0LB3OOtmGZ8Oo4PVuMBGgAKciOrGmUt_A");
@@ -40,12 +40,12 @@ export default function Home() {
         setDistinctId(userData.uid);
 
         const uid = userData.uid;
-        const secret = "q6YqklUyAEvK_l-8PJ6npHAT0M1tKdwQ8KQYbbKC7Wc";
+        const secret = "wUbCunC7WHXkY7O9hFImzezYVo47k4zDpCht7vnZF-g";
 
         if (uid && secret) {
             fetch(`api/hmac?distinct_id=${uid}&secret=${secret}&tasksObj=${encodeURIComponent(JSON.stringify(storedData.users[uid - 1].tasks))}`)
                 .then(response => response.json())
-                .then(data => console.log(data.hash)) // Log hash for debugging
+                .then(data => setHash(data.hash)) // Log hash for debugging
                 .catch(error => console.error('Error fetching HMAC:', error));
         }
 
@@ -60,6 +60,9 @@ export default function Home() {
     const addTask = () => {
         router.push('/addTask');
     };
+    function logout(){
+        router.push('/');
+    }
 
     const changeStatus = (status, taskName) => {
         if (!data || !user) return;
@@ -80,7 +83,7 @@ export default function Home() {
     }
 
     return (
-        <main className="bg-black bg-cover bg-center">
+        <main className="bg-[url('../../public/assests/back-ground.jpg')] bg-cover bg-center">
             <header className="text-gray-600 body-font bg-opacity-30 backdrop-blur-md p-2">
                 <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between">
                     <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
@@ -89,11 +92,13 @@ export default function Home() {
                         </svg>
                         <span className="ml-3 text-xl text-indigo-100">Task Manager</span>
                     </a>
-                    <div>
+                    <div className="flex">
+                    <a href="/" className="text-indigo-100">Logout | </a>
                         <div className="flex items-center space-x-4">
-                            <span className="text-white font-medium">{user.username}</span>
+                            <span className="text-white font-medium"> {user.username}</span>
                             <i className="fas fa-user-circle text-white text-2xl"></i>
                         </div>
+                        
                     </div>
                 </div>
             </header>
@@ -106,7 +111,7 @@ export default function Home() {
                         <div className="flex">
                             <SuprSendInbox
                                 workspaceKey="eY0zNzLO0x7LGovrI9vG"
-                                subscriberId="dTM03k-av8G_g9Wy2F03MAMTm04578ld2GVhQkFr0tM"
+                                subscriberId={hash}
                                 distinctId={distinctId}
                                 themeType="dark"
                             />

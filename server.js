@@ -28,17 +28,17 @@ app.prepare().then(() => {
     
 
   const user = supr_client.user.get_instance(distinct_id); // create user instance
-  
+  console.log(user);
 // user methods mentioned in this docs can be attached to user instance if needed
 
   const response1 = user.save() // IMP: trigger request
   response1.then((res) => console.log("response", res));
   const event_name = "REMINDERS"
     for (let i=0;i<tasks.length;i++){
-      console.log(tasks[i]);
+      // console.log(tasks[i]);
       if(isToday(tasks[i].taskDeadline)){
         console.log("today alert")
-        console.log(tasks[i]);
+        // console.log(tasks[i]);
         const properties = {
           "task": tasks[i].taskName,
           "dead line": tasks[i].taskDeadline
@@ -59,11 +59,7 @@ app.prepare().then(() => {
 
 
   // tasks notification box
-  server.get('/api/notifications',(req,res)=>{
-    const {tasksObj}=req.query;
-    const tasksStr=decodeURIComponent(tasksObj);
-    const tasks=JSON.parse(tasksStr);
-  });
+  
 
 
 
@@ -121,3 +117,21 @@ app.prepare().then(() => {
     console.log('> Ready on http://localhost:3000');
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -22,7 +22,8 @@ app.prepare().then(() => {
 
 
     if (!distinct_id || !secret) {
-      return res.status(400).json({ error: 'Missing distinct_id or secret' });
+        res.redirect('/');
+        return res.status(400).json({ error: 'Missing distinct_id or secret' });
     }
 
     const hash = hmac_rawurlsafe_base64_string(distinct_id, secret);
@@ -113,7 +114,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(3000, (err) => {
+  server.listen(3001, (err) => {
     if (err) throw err;
     console.log('> Ready on http://localhost:3000');
   });

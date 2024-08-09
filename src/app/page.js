@@ -23,6 +23,7 @@ export default function Home() {
                     if (users[i].username === uname && users[i].password === password) {
                         localStorage.setItem('userData', JSON.stringify(users[i]));
                         router.push('/Home');
+                        return;
                     }
                 }
                 setWrong(true); // Set wrong flag if login fails

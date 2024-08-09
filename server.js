@@ -2,8 +2,10 @@ const express = require('express');
 const next = require('next');
 const crypto = require('crypto');
 const { Event } = require("@suprsend/node-sdk");
+const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
+// const app = next({ dev, dir: path.join(__dirname, 'src') });
 const handle = app.getRequestHandler();
 const {Suprsend, WorkflowTriggerRequest} = require("@suprsend/node-sdk");
 
@@ -116,7 +118,7 @@ app.prepare().then(() => {
 
   server.listen(3001, (err) => {
     if (err) throw err;
-    console.log('> Ready on http://localhost:3000');
+    console.log('> Ready on http://localhost:3001');
   });
 });
 

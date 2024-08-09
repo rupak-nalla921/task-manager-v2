@@ -43,7 +43,7 @@ export default function Home() {
         const secret = "wUbCunC7WHXkY7O9hFImzezYVo47k4zDpCht7vnZF-g";
 
         if (uid && secret) {
-            fetch(`api/hmac?distinct_id=${uid}&secret=${secret}&tasksObj=${encodeURIComponent(JSON.stringify(storedData.users[uid - 1].tasks))}`)
+            fetch(`/api/hmac?distinct_id=${uid}&secret=${secret}&tasksObj=${encodeURIComponent(JSON.stringify(storedData.users[uid - 1].tasks))}`)
                 .then(response => response.json())
                 .then(data => setHash(data.hash)) // Log hash for debugging
                 .catch(error => console.error('Error fetching HMAC:', error));
